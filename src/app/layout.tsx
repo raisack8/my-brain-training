@@ -7,6 +7,8 @@ import "./globals.css";
 
 const geistSans = Geist({ variable: "--font-sans", subsets: ["latin"] });
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "疑問ノート",
   description: "毎日の疑問 → 仮説 → 結果 を積み上げるノート",

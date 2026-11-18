@@ -1,7 +1,7 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import { sql } from "@/lib/db";
+import { db } from "@/lib/db";
 import { POINTS } from "@/lib/points";
 
 export type ActionState = { ok: boolean; message: string; earned?: number; at?: number } | null;
@@ -15,6 +15,7 @@ function readBody(formData: FormData): string | null {
 }
 
 export async function createQuestion(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const sql = db();
   const body = readBody(formData);
   if (!body) return { ok: false, message: `1〜${MAX_LEN}文字で入力してください`, at: Date.now() };
 
@@ -31,6 +32,7 @@ export async function createQuestion(_prev: ActionState, formData: FormData): Pr
 }
 
 export async function createReply(_prev: ActionState, formData: FormData): Promise<ActionState> {
+  const sql = db();
   const questionId = String(formData.get("questionId") ?? "");
   const kind = String(formData.get("kind") ?? "");
   const body = readBody(formData);

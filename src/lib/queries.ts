@@ -1,5 +1,5 @@
 import "server-only";
-import { sql } from "./db";
+import { db } from "./db";
 
 export type ReplyKind = "hypothesis" | "result";
 
@@ -19,11 +19,13 @@ export type Reply = {
 };
 
 export async function getTotalPoints(): Promise<number> {
+  const sql = db();
   const rows = await sql`SELECT COALESCE(SUM(points), 0)::int AS total FROM brain_training.point_logs`;
   return rows[0].total as number;
 }
 
 export async function listQuestions(): Promise<QuestionSummary[]> {
+  const sql = db();
   return (await sql`
     SELECT q.id, q.body, q.created_at,
       COUNT(r.id) FILTER (WHERE r.kind = 'hypothesis')::int AS hypothesis_count,
@@ -36,6 +38,7 @@ export async function listQuestions(): Promise<QuestionSummary[]> {
 }
 
 export async function getQuestion(id: string) {
+  const sql = db();
   const qs = await sql`SELECT id, body, created_at FROM brain_training.questions WHERE id = ${id}`;
   if (qs.length === 0) return null;
   const replies = (await sql`
